@@ -139,13 +139,13 @@ do
         --srcSQL) srcSQL=$2
                 shift
             ;;
-        --desSQL) srcSQL=$2
+        --desSQL) desSQL=$2
                 shift
             ;;
-        --srcMongo) srcSQL=$2
+        --srcMongo) srcMongo=$2
                 shift
             ;;
-        --desMongo) srcSQL=$2
+        --desMongo) desMongo=$2
                 shift
             ;;
         --slack) slack_webhook=$2
