@@ -292,6 +292,6 @@ fi
 
 copySQLDatabase &
 copyMongoDataBase &
-
+#test
 wait
 exit 0
