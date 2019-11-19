@@ -109,11 +109,11 @@ copyMongoDataBase(){
         echo "$srcMongo --> $desMongo"
 
         elog "$(date +'%Y-%m-%d-%H-%M-%S') : Starting dump of $srcMongo to $mongoDB_dump_dir"
-        mongodump $verbose -uri="$srcMongo" --oplog --out=$mongoDB_dump_dir
+        mongodump $verbose --uri="$srcMongo" --oplog --out=$mongoDB_dump_dir
         elog "$(date +'%Y-%m-%d-%H-%M-%S') : Finished dumping $srcMongo to $mongoDB_dump_dir"
 
         elog "$(date +'%Y-%m-%d-%H-%M-%S') : Starting populating $desMongo from $mongoDB_dump_dir"
-        mongorestore $verbose -uri="$desMongo" $mongoDB_dump_dir
+        mongorestore $verbose --uri="$desMongo" $mongoDB_dump_dir
         elog "$(date +'%Y-%m-%d-%H-%M-%S') : Finished populating $desMongo from $mongoDB_dump_dir"
 
         end=$(date +%s)
@@ -194,7 +194,7 @@ else
         srcuSQL=${srcuSQL:-root}
         read -p "password [root]:" -s srcpSQL
         srcpSQL=${srcpSQL:-root}
-        mysql -h $srcSQL -u $srcuSQL -p$srcpSQL  -e ";" || {
+        mysql -h $srcSQL -u $srcuSQL -p$srcpSQL  -e "SHOW GRANTS FOR CURRENT_USER;" || {
             echo "Source MySQL database not reachable. Aborting." 1>&2
             exit 111
         }
@@ -211,7 +211,7 @@ else
         desuSQL=${desuSQL:-root}
         read -p "password [root]:" -s despSQL
         despSQL=${despSQL:-root}
-        mysql -h $desSQL -u $desuSQL -p$despSQL  -e ";" || {
+        mysql -h $desSQL -u $desuSQL -p$despSQL  -e "SHOW GRANTS FOR CURRENT_USER;" || {
             echo "Destination MySQL database not reachable. Aborting." 1>&2
             exit 121
         }
@@ -293,5 +293,5 @@ fi
 copySQLDatabase &
 copyMongoDataBase &
 
-
+wait
 exit 0
