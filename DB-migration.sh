@@ -54,6 +54,7 @@ srcpMongo="root"
 desMongo=""
 desuMongo="root"
 despMongo="root"
+mongoDB_dump_dir="mongo_dump_migration"
 startMongoDBM=""
 
 
@@ -92,7 +93,8 @@ copySQLDatabase(){
 
         #End of copy
         mysql -h $srcSQL -u $srcuSQL -p$srcpSQL $verbose -e "Unlock tables;"
-        elog "$(date +'%Y-%m-%d-%H-%M-%S') : Finished MySQL migration. Took $($(date +%s)-$start) seconds."
+        end=$(date +%s)
+        elog "$(date +'%Y-%m-%d-%H-%M-%S') : Finished MySQL migration. Took $(($end - $start)) seconds."
         exit 0
 }
 
@@ -107,14 +109,15 @@ copyMongoDataBase(){
         echo "$srcMongo --> $desMongo"
 
         elog "$(date +'%Y-%m-%d-%H-%M-%S') : Starting dump of $srcMongo to $mongoDB_dump_dir"
-        mongodump $verbose -uri="$srcMongo" --out=$mongoDB_dump_dir
+        mongodump $verbose -uri="$srcMongo" --oplog --out=$mongoDB_dump_dir
         elog "$(date +'%Y-%m-%d-%H-%M-%S') : Finished dumping $srcMongo to $mongoDB_dump_dir"
 
         elog "$(date +'%Y-%m-%d-%H-%M-%S') : Starting populating $desMongo from $mongoDB_dump_dir"
         mongorestore $verbose -uri="$desMongo" $mongoDB_dump_dir
         elog "$(date +'%Y-%m-%d-%H-%M-%S') : Finished populating $desMongo from $mongoDB_dump_dir"
 
-        elog "$(date +'%Y-%m-%d-%H-%M-%S') : Finished MongoDB migration. Took $($(date +%s)-$start) seconds."
+        end=$(date +%s)
+        elog "$(date +'%Y-%m-%d-%H-%M-%S') : Finished MongoDB migration. Took $(($end - $start)) seconds."
         exit 0
 }
 
@@ -254,7 +257,10 @@ else
             srcpSQL=${srcpSQL:-root}
             srcMongo=`echo $srcMongo | sed -e "s/^\(mongodb:\/\/\)\(.*\)$/\1$srcuMongo:$srcpMongo@\2/g"`
         fi
-
+        mongo "$srcMongo" --eval "db.getCollectionNames()" || {
+            echo "Source MySQL database not reachable. Aborting." 1>&2
+            exit 211
+        }
         if test $interMongo
         then
             read -p "Enter connection string of destination database [mongodb://localhost:27017/admin]:" desMongo
@@ -274,7 +280,10 @@ else
             srcpSQL=${srcpSQL:-root}
             srcMongo=`echo $srcMongo | sed -e "s/^\(mongodb:\/\/\)\(.*\)$/\1$srcuMongo:$srcpMongo@\2/g"`
         fi
-
+        mongo "$desMongo" --eval "db.getCollectionNames()" || {
+            echo "Source MySQL database not reachable. Aborting." 1>&2
+            exit 221
+        }
         #TODO: "ping" both databases for authorization check
 
         startMongoDBM="true"
