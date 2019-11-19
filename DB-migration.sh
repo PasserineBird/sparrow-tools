@@ -183,7 +183,6 @@ else
         if test $interSQL
         then
             read -p "Enter address of source database [127.0.0.1:3306]:" srcSQL
-            echo ""
             srcSQL=${srcSQL:-127.0.0.1:3306}
             srcSQL=$(echo $srcSQL | cut -d: -f1)
         fi
@@ -192,12 +191,15 @@ else
         srcuSQL=${srcuSQL:-root}
         read -p "password [root]:" -s srcpSQL
         srcpSQL=${srcpSQL:-root}
+        mysql -h $srcSQL -u $srcuSQL -p$srcpSQL  -e ";" || {
+            echo "Source MySQL database not reachable. Aborting." 1>&2
+            exit 111
+        }
         echo ""
 
         if test $interSQL
         then
             read -p "Enter address of destination database [127.0.0.1:3306]:" desSQL
-            echo ""
             desSQL=${desSQL:-127.0.0.1:3306}
             desSQL=$(echo $desSQL | cut -d: -f1)
         fi
@@ -206,6 +208,10 @@ else
         desuSQL=${desuSQL:-root}
         read -p "password [root]:" -s despSQL
         despSQL=${despSQL:-root}
+        mysql -h $desSQL -u $desuSQL -p$despSQL  -e ";" || {
+            echo "Destination MySQL database not reachable. Aborting." 1>&2
+            exit 121
+        }
         echo ""
 
         #TODO: "ping" both databases for authorization check
