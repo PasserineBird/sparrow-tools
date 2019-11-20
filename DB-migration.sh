@@ -5,6 +5,7 @@ display_usage() {
 	echo "Requires to disable any service that could write in the database."
 	echo "This script will disable writing authorisation for any user on the database while migrations are ongoing."
     echo "IPv6 not yet supported"
+    echo "Repository available at https://github.com/poignanj/sparrow-migration-tools"
     echo ""
 	echo "USAGE:"
 	echo "$0 [[--MySQL] | [--srcSQL IP:port] [--desSQL IP:port]] [[--MongoDB] | [--srcMongo Connection_String] [--desMongo Connection_String]] [-y] [-v] [--slack slack-webhook]"
@@ -109,7 +110,7 @@ copyMongoDataBase(){
         echo "$srcMongo --> $desMongo"
 
         elog "$(date +'%Y-%m-%d-%H-%M-%S') : Starting dump of $srcMongo to $mongoDB_dump_dir"
-        mongodump $verbose --uri="$srcMongo" --oplog --out=$mongoDB_dump_dir
+        mongodump $verbose --uri="$srcMongo" --out=$mongoDB_dump_dir
         elog "$(date +'%Y-%m-%d-%H-%M-%S') : Finished dumping $srcMongo to $mongoDB_dump_dir"
 
         elog "$(date +'%Y-%m-%d-%H-%M-%S') : Starting populating $desMongo from $mongoDB_dump_dir"
@@ -258,7 +259,7 @@ else
             srcMongo=`echo $srcMongo | sed -e "s/^\(mongodb:\/\/\)\(.*\)$/\1$srcuMongo:$srcpMongo@\2/g"`
         fi
         mongo "$srcMongo" --eval "db.getCollectionNames()" || {
-            echo "Source MySQL database not reachable. Aborting." 1>&2
+            echo "Source MongoDB database not reachable. Aborting." 1>&2
             exit 211
         }
         if test $interMongo
@@ -281,7 +282,7 @@ else
             srcMongo=`echo $srcMongo | sed -e "s/^\(mongodb:\/\/\)\(.*\)$/\1$srcuMongo:$srcpMongo@\2/g"`
         fi
         mongo "$desMongo" --eval "db.getCollectionNames()" || {
-            echo "Source MySQL database not reachable. Aborting." 1>&2
+            echo "Destination MongoDB database not reachable. Aborting." 1>&2
             exit 221
         }
         #TODO: "ping" both databases for authorization check
