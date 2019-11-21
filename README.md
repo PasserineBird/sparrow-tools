@@ -11,8 +11,9 @@ This script will disable writing authorisation for any user on the database whil
 IPv6 not yet supported<br />
 </p>
 **USAGE:**
-./DB-migration.sh *[[ --MySQL ] | [ --srcSQL* IP:port *]* *[ --desSQL* IP:port *]] [[--MongoDB] | [--srcMongo* Connection_String *] [ --desMongo* Connection_String *]] [-y] [-v] [ --slack* slack-webhook *]*
-
+<br />
+./DB-migration.sh [[ --MySQL ] | [ --srcSQL IP:port ] [ --desSQL IP:port ]] [[--MongoDB] | [--srcMongo Connection_String ] [ --desMongo Connection_String ]] [-y] [-v] [ --slack slack-webhook ]
+<br />
 MySQL:<br />
 *[--MySQL]* Activate interactive mode. Script will ignore further MySQL options.<br />
 *[--srcSQL IP:port]* Source database server for MySQL migration.<br />
