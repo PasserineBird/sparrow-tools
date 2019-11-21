@@ -10,6 +10,7 @@ Requires to disable any service that could write in the database.<br />
 This script will disable writing authorisation for any user on the database while migrations are ongoing.<br />
 IPv6 not yet supported<br />
 </p>
+
 **USAGE:**
 <br />
 ./DB-migration.sh [[ --MySQL ] | [ --srcSQL IP:port ] [ --desSQL IP:port ]] [[--MongoDB] | [--srcMongo Connection_String ] [ --desMongo Connection_String ]] [-y] [-v] [ --slack slack-webhook ]
