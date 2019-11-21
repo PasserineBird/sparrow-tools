@@ -64,7 +64,7 @@ elog() {
     #then
         echo $@
     #fi
-    if [ ! -z "$slack-webhook" ]
+    if [ ! -z "$slack_webhook" ]
     then
         curl -X POST -H 'Content-type: application/json' --data "{'text':\"$@\"}" $slack_webhook
     fi
