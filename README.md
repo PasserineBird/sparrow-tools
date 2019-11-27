@@ -1,6 +1,6 @@
-# sparrow-migration-tools
+# sparrow-tools
 
-Various tools for migration processes
+Various tools for migration processes, database backup and restore...
 
 ## DB-migration
 
