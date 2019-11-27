@@ -5,7 +5,7 @@ display_usage() {
 	echo "Backup and restore script for Rancher 2.x single node install."
 	echo "Must be used by a user with docker privileges and write authorization to the backup directory"
     echo "Needs tar and busybox"
-    echo "Repository available at https://github.com/poignanj/sparrow-migration-tools"
+    echo "Repository available at https://github.com/poignanj/sparrow-tools"
     echo ""
 	echo "USAGE:"
 	echo "$0 [--backup $backupDirectory | --restore $backupFile] [--slack $slack-webhook]"
