@@ -6,8 +6,8 @@ if [ "${INIT_BACKUP}" -gt "0" ]; then
   echo "=> Create a backup on the startup"
   /backup.sh
 elif [ -n "${INIT_RESTORE_LATEST}" ]; then
-  echo "=> Restore latest backup"
-  until nc -z "$MONGODB_STRING"
+  echo "=> Restore latest backup" 
+  until nc -z "$MONGODB_STRING" #FIXME: netcat will not work with mongostring
   do
       echo "waiting database container..."
       sleep 1

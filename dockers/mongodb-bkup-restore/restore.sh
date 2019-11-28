@@ -1,6 +1,8 @@
 #!/bin/bash
-[ -z "${MONGODB_USER}" ] && { echo "=> MONGODB_USER cannot be empty" && exit 1; }
-[ -z "${MONGODB_PASS}" ] && { echo "=> MONGODB_PASS cannot be empty" && exit 1; }
+[ -z "${MONGODB_STRING}" ] && { echo "=> MONGODB_STRING cannot be empty" && exit 1; }
+[ -z "${MONGODB_FILE}" ] && { echo "=> MONGODB_FILE cannot be empty" && exit 1; }
+
+
 
 if [ "$#" -ne 1 ]
 then
@@ -9,7 +11,7 @@ fi
 
 echo "=> Restore database from $1"
 set -o pipefail
-if gunzip --stdout "$1" | mysql -h "$MONGODB_HOST" -P "$MONGODB_PORT" -u "$MONGODB_USER" -p"$MONGODB_PASS"
+if mongorestore --uri="$MONGODB_STRING" --archive=/backup/$MONGODB_FILE
 then
     echo "=> Restore succeeded"
 else
