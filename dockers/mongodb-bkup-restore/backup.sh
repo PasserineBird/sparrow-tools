@@ -6,7 +6,7 @@
 
 DATE=$(date +%Y%m%d%H%M)
 echo "=> Backup started at $(date "+%Y-%m-%d %H:%M:%S")"
-FILENAME="/backup/${DATE}_mongodb_backup.gz"
+FILENAME="/backup/${DATE}_mongodb_backup.archive"
 
 data=$(mongo --quiet "${MONGODB_STRING}" --eval "db.adminCommand( { listDatabases: 1 } )" | grep -v "$(date +%Y-%m-%d)")
 totalSize=$(echo $data | jq .totalSize)
