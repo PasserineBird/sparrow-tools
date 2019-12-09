@@ -183,7 +183,6 @@ else
         echo "MySQL version found."
         echo $mysqlVersion
 
-        #TODO: Interactive mode
         if test $interSQL
         then
             read -p "Enter address of source database [127.0.0.1:3306]:" srcSQL
@@ -218,7 +217,7 @@ else
         }
         echo ""
 
-        #TODO: "ping" both databases for authorization check
+        #TODO: authorization check
 
         startSQLM="true"
 
@@ -258,7 +257,7 @@ else
             srcpSQL=${srcpSQL:-root}
             srcMongo=`echo $srcMongo | sed -e "s/^\(mongodb:\/\/\)\(.*\)$/\1$srcuMongo:$srcpMongo@\2/g"`
         fi
-        mongo "$srcMongo" --eval "db.getCollectionNames()" || {
+        mongo "$srcMongo" --eval "db.adminCommand('listDatabases')" || {
             echo "Source MongoDB database not reachable. Aborting." 1>&2
             exit 211
         }
@@ -281,11 +280,11 @@ else
             srcpSQL=${srcpSQL:-root}
             srcMongo=`echo $srcMongo | sed -e "s/^\(mongodb:\/\/\)\(.*\)$/\1$srcuMongo:$srcpMongo@\2/g"`
         fi
-        mongo "$desMongo" --eval "db.getCollectionNames()" || {
+        mongo "$desMongo" --eval "db.adminCommand('listDatabases')" || {
             echo "Destination MongoDB database not reachable. Aborting." 1>&2
             exit 221
         }
-        #TODO: "ping" both databases for authorization check
+        #TODO: authorization check
 
         startMongoDBM="true"
     fi
