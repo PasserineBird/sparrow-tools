@@ -12,7 +12,7 @@ data=$(mongo --quiet "${MONGODB_STRING}" --eval "db.adminCommand( { listDatabase
 totalSize=$(echo $data | jq .totalSize)
 echo "Estimated dump size: $totalSize bytes"
 
-mongodump -uri="$MONGODB_STRING" --archive=$DIRNAME
+mongodump --uri="$MONGODB_STRING" --archive=$FILENAME
 
 
 #TODO: "$MAKE_SPACE" == timestamp
