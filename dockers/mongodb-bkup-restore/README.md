@@ -8,7 +8,10 @@ This docker image runs mysqldump to backup your databases periodically using cro
 
 ```bash
 docker container run -d \
-       --env MONGODB_STRING="mongodb://login:password@localhost:27017/" \
+       --env MONGO_HOST="replsetName/host1:27017,host2,host3" \
+       --env MONGO_USER="root" \
+       --env MONGO_PASSWD="myAwesomePasswd" \
+       --env MONGO_DB="thatDBIwannaSave" \
        --link mongodb \
        --volume /path/to/my/backup/folder:/backup
        passerinebird/sparrow-mongo-backup
@@ -16,8 +19,11 @@ docker container run -d \
 
 ## Variables
 
-- `MONGODB_STRING`: The host/ip of your mysql database.
-- `CRON_TIME`: The interval of cron job to run mysqldump. `0 3 * * sun` by default, which is every Sunday at 03:00.
+- `MONGO_HOST`: The host/ip of your mongo database.
+- `MONGO_USER`: The user of your mongo database.
+- `MONGO_PASSWD`: The password of your mongo_user database.
+- `MONGO_DB`: Your mongo database.
+- `CRON_TIME`: The interval of cron job to run mongodump. `0 3 * * sun` by default, which is every Sunday at 03:00.
 - `MAX_BACKUPS`: The number of backups to keep. When reaching the limit, the old backup will be discarded. No limit by default.
 - `INIT_BACKUP`: If set, create a backup when the container starts.
 - `INIT_RESTORE_LATEST`: If set, restores latest backup.
