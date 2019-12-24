@@ -12,8 +12,9 @@ data=$(mongo --quiet "${MONGODB_STRING}" --eval "db.adminCommand( { listDatabase
 totalSize=$(echo $data | jq .totalSize)
 echo "Estimated dump size: $totalSize bytes"
 
-mongodump -uri="$MONGODB_STRING" --archive=$DIRNAME
+# ! TODO: TRANSFORMER MONGO_STRING INTO ENVS -> IN RUN.SH
 
+mongodump -h "$MONGO_HOST" -u "$MONGO_USER" -p "$MONGO_PASSWD" -d "$MONGO_DB" --archive=$FILENAME
 
 #TODO: "$MAKE_SPACE" == timestamp
 #check with mongo if backup will take too much place
