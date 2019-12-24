@@ -14,7 +14,7 @@ echo "Estimated dump size: $totalSize bytes"
 
 # ! TODO: TRANSFORMER MONGO_STRING INTO ENVS -> IN RUN.SH
 
-mongodump -h "$MONGO_HOST" -u "$MONGO_USER" -p "$MONGO_PASSWD" -d "$MONGO_DB" --archive=$FILENAME
+mongodump -h "$MONGO_HOST" -u "$MONGO_USER" -p "$MONGO_PASSWD" -d "$MONGO_DB" --authenticationDatabase="$MONGO_AUTH_DB" --archive=$FILENAME
 
 #TODO: "$MAKE_SPACE" == timestamp
 #check with mongo if backup will take too much place
