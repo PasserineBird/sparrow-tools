@@ -10,29 +10,35 @@ FILENAME="/backup/${DATE}_mongodb_backup.archive"
 
 data=$(mongo --quiet "${MONGODB_STRING}" --eval "db.adminCommand( { listDatabases: 1 } )" | grep -v "$(date +%Y-%m-%d)")
 totalSize=$(echo $data | jq .totalSize)
+availableSpace=`df /backup | tail -1 | awk '{print $4}'`
 echo "Estimated dump size: $totalSize bytes"
+echo "Space available: $availableSpace bytes"
 
-# ! TODO: TRANSFORMER MONGO_STRING INTO ENVS -> IN RUN.SH
+if [ $availableSpace -lt $totalSize ]
+then
+  #TODO: "$MAKE_SPACE" == timestamp
+  #check with mongo if backup will take too much place
+  # if no space left, delete oldest saves [if older than timestamp].
 
-mongodump -h "$MONGO_HOST" -u "$MONGO_USER" -p "$MONGO_PASSWD" -d "$MONGO_DB" --authenticationDatabase="$MONGO_AUTH_DB" --archive=$FILENAME
+  echo "Not enough space available"
+  return 1
+fi
 
-#TODO: "$MAKE_SPACE" == timestamp
-#check with mongo if backup will take too much place
-# if no space left, delete oldest saves [if older than timestamp].
+#TODO: TRANSFORMER MONGO_STRING INTO ENVS -> IN RUN.SH
 
-#TODO: change max backup deletion by MONGODB.tar.gz instead of MYSQL
+mongodump --quiet -h "$MONGO_HOST" -u "$MONGO_USER" -p "$MONGO_PASSWD" -d "$MONGO_DB" --authenticationDatabase="$MONGO_AUTH_DB" --archive=$FILENAME
 
-'''
+
 if [ -n "$MAX_BACKUPS" ]
 then
   MAX_FILES=$(( MAX_BACKUPS * DB_COUNTER ))
-  while [ "$(find /backup -maxdepth 1 -name "*.sql.gz" -type f | wc -l)" -gt "$MAX_FILES" ]
+  while [ "$(find /backup -maxdepth 1 -name "*.archive" -type f | wc -l)" -gt "$MAX_FILES" ]
   do
-    TARGET=$(find /backup -maxdepth 1 -name "*.sql.gz" -type f | sort | head -n 1)
+    TARGET=$(find /backup -maxdepth 1 -name "*.archive" -type f | sort | head -n 1)
     echo "==> Max number of backups ($MAX_BACKUPS) reached. Deleting ${TARGET} ..."
     rm -rf "${TARGET}"
     echo "==> Backup ${TARGET} deleted"
   done
 fi
-'''
+
 echo "=> Backup process finished at $(date "+%Y-%m-%d %H:%M:%S")"
