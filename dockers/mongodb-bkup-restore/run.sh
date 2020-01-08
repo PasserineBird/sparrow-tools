@@ -7,12 +7,7 @@ if [ "${INIT_BACKUP}" -gt "0" ]; then
   /backup.sh
 elif [ -n "${INIT_RESTORE_LATEST}" ]; then
   echo "=> Restore latest backup" 
-  until nc -z "$MONGODB_STRING" #FIXME: netcat will not work with mongostring
-  do
-      echo "waiting database container..."
-      sleep 1
-  done
-find /backup -maxdepth 1 -name '*.sql.gz' | tail -1 | xargs /restore.sh
+  find /backup -maxdepth 1 -name '*.archive' | tail -1 | xargs /restore.sh
 fi
 
 echo "${CRON_TIME} /backup.sh >> /mongodb_backup.log 2>&1" > /crontab.conf
