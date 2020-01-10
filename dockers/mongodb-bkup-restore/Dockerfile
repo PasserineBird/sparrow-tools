@@ -15,8 +15,8 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 ENV CRON_TIME="0 3 * * sun" \
     MONGODB_STRING="mongodb://localhost:27017/"
 
-COPY ["run.sh", "backup.sh", "restore.sh", "/"]
-RUN mkdir /backup && chmod u+x /backup.sh /restore.sh
+COPY ["run.sh", "backup.sh", "restore.sh", "rolling_updates.sh", "/"]
+RUN mkdir /backup /backup/daily /backup/weekly /backup/monthly && chmod u+x /backup.sh /restore.sh /rolling_updates.sh
 VOLUME ["/backup"]
 
 CMD dockerize /run.sh

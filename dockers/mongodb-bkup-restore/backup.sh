@@ -6,7 +6,7 @@
 
 DATE=$(date +%Y%m%d%H%M)
 echo "=> Backup started at $(date "+%Y-%m-%d %H:%M:%S")"
-FILENAME="/backup/${DATE}_mongodb_backup.archive"
+FILENAME="/backup/daily/${DATE}_mongodb_backup.archive"
 
 data=$(mongo --quiet "${MONGODB_STRING}" --eval "db.adminCommand( { listDatabases: 1 } )" | grep -v "$(date +%Y-%m-%d)")
 totalSize=$(echo $data | jq .totalSize)
@@ -14,15 +14,7 @@ availableSpace=`df /backup | tail -1 | awk '{print $4}'`
 echo "Estimated dump size: $totalSize bytes"
 echo "Space available: $availableSpace bytes"
 
-if [ $availableSpace -lt $totalSize ]
-then
-  #TODO: "$MAKE_SPACE" == timestamp
-  #check with mongo if backup will take too much place
-  # if no space left, delete oldest saves [if older than timestamp].
-
-  echo "Not enough space available"
-  return 1
-fi
+/rolling_updates.sh
 
 #TODO: TRANSFORMER MONGO_STRING INTO ENVS -> IN RUN.SH
 
