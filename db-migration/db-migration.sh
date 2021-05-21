@@ -5,7 +5,7 @@ display_usage() {
 	echo "Requires to disable any service that could write in the database."
 	echo "This script will disable writing authorisation for any user on the database while migrations are ongoing."
     echo "IPv6 not yet supported"
-    echo "Repository available at https://github.com/poignanj/sparrow-tools"
+    echo "Repository available at https://github.com/PasserineBird/sparrow-tools"
     echo ""
 	echo "USAGE:"
 	echo "$0 [[--MySQL] | [--srcSQL IP:port] [--desSQL IP:port]] [[--MongoDB] | [--srcMongo Connection_String] [--desMongo Connection_String]] [-y] [-v] [--slack slack-webhook]"
